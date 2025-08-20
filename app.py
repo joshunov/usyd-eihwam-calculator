@@ -13,6 +13,19 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
 <style>
+    /* Ensure all text has good contrast */
+    .stMarkdown, .stText, .stDataFrame {
+        color: #333333 !important;
+    }
+    
+    /* Ensure links are visible */
+    a {
+        color: #1f77b4 !important;
+    }
+    
+    a:hover {
+        color: #0056b3 !important;
+    }
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
@@ -34,6 +47,7 @@ st.markdown("""
         border-radius: 10px;
         border-left: 4px solid #1f77b4;
         margin: 0.5rem 0;
+        color: #333333;
     }
     .warning-box {
         background: #fff3cd;
@@ -41,6 +55,7 @@ st.markdown("""
         border-radius: 10px;
         padding: 1rem;
         margin: 1rem 0;
+        color: #856404;
     }
     .info-box {
         background: #d1ecf1;
