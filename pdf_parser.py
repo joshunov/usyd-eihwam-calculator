@@ -234,7 +234,7 @@ class TranscriptParser:
     
     def calculate_eihwam(self, units: List[Dict]) -> Tuple[float, float]:
         """Calculate EIHWAM and regular WAM."""
-        # Only include units that have all required data
+        # For EIHWAM: Only include units that meet EIHWAM criteria
         included_units = [
             u for u in units 
             if u['included_in_eihwam'] 
@@ -244,18 +244,29 @@ class TranscriptParser:
             and u['credit_points'] > 0  # Exclude 0 credit point units
         ]
         
+        # For regular WAM: Include ALL units with marks and credit points (except 0 credit point units)
+        wam_units = [
+            u for u in units 
+            if u['mark'] is not None 
+            and u['credit_points'] is not None
+            and u['credit_points'] > 0  # Exclude 0 credit point units
+        ]
+        
         if not included_units:
-            return 0.0, 0.0
+            eihwam = 0.0
+        else:
+            # Calculate EIHWAM
+            eihwam_numerator = sum(u['weight'] * u['credit_points'] * u['mark'] for u in included_units)
+            eihwam_denominator = sum(u['weight'] * u['credit_points'] for u in included_units)
+            eihwam = eihwam_numerator / eihwam_denominator if eihwam_denominator > 0 else 0.0
         
-        # Calculate EIHWAM
-        eihwam_numerator = sum(u['weight'] * u['credit_points'] * u['mark'] for u in included_units)
-        eihwam_denominator = sum(u['weight'] * u['credit_points'] for u in included_units)
-        eihwam = eihwam_numerator / eihwam_denominator if eihwam_denominator > 0 else 0.0
-        
-        # Calculate regular WAM
-        wam_numerator = sum(u['credit_points'] * u['mark'] for u in included_units)
-        wam_denominator = sum(u['credit_points'] for u in included_units)
-        wam = wam_numerator / wam_denominator if wam_denominator > 0 else 0.0
+        if not wam_units:
+            wam = 0.0
+        else:
+            # Calculate regular WAM (includes all units with marks)
+            wam_numerator = sum(u['credit_points'] * u['mark'] for u in wam_units)
+            wam_denominator = sum(u['credit_points'] for u in wam_units)
+            wam = wam_numerator / wam_denominator if wam_denominator > 0 else 0.0
         
         return round(eihwam, 2), round(wam, 2)
     
