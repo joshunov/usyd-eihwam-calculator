@@ -215,6 +215,7 @@ class TranscriptParser:
     def calculate_weights(self, units: List[Dict]) -> List[Dict]:
         """Calculate weights for each unit based on level and thesis status."""
         for unit in units:
+            # EIHWAM weights (1000-level = 0)
             if unit['level'] == 1:
                 unit['weight'] = 0
             elif unit['level'] == 2:
@@ -226,9 +227,25 @@ class TranscriptParser:
             else:
                 unit['weight'] = 0
             
-            # Double weight for thesis units
+            # Double weight for thesis units in EIHWAM
             if unit['is_thesis']:
                 unit['weight'] *= 2
+            
+            # WAM weights (1000-level = 1)
+            if unit['level'] == 1:
+                unit['wam_weight'] = 1
+            elif unit['level'] == 2:
+                unit['wam_weight'] = 2
+            elif unit['level'] == 3:
+                unit['wam_weight'] = 3
+            elif unit['level'] >= 4:
+                unit['wam_weight'] = 4
+            else:
+                unit['wam_weight'] = 1
+            
+            # Double weight for thesis units in WAM
+            if unit['is_thesis']:
+                unit['wam_weight'] *= 2
         
         return units
     
@@ -263,9 +280,9 @@ class TranscriptParser:
         if not wam_units:
             wam = 0.0
         else:
-            # Calculate regular WAM using same weighting as EIHWAM but including ALL units
-            wam_numerator = sum(u['weight'] * u['credit_points'] * u['mark'] for u in wam_units)
-            wam_denominator = sum(u['weight'] * u['credit_points'] for u in wam_units)
+            # Calculate regular WAM using WAM weights (1000-level = 1)
+            wam_numerator = sum(u['wam_weight'] * u['credit_points'] * u['mark'] for u in wam_units)
+            wam_denominator = sum(u['wam_weight'] * u['credit_points'] for u in wam_units)
             wam = wam_numerator / wam_denominator if wam_denominator > 0 else 0.0
         
         return round(eihwam, 2), round(wam, 2)
