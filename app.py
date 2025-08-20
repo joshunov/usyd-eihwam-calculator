@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
-import json
 from pdf_parser import TranscriptParser
-import base64
-from datetime import datetime
 
 # Page configuration
 st.set_page_config(
@@ -60,17 +57,7 @@ def load_parser():
     """Load the transcript parser with caching."""
     return TranscriptParser()
 
-def create_download_link(data, filename, file_type):
-    """Create a download link for data."""
-    if file_type == "csv":
-        csv = data.to_csv(index=False)
-        b64 = base64.b64encode(csv.encode()).decode()
-        href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">Download CSV</a>'
-    elif file_type == "json":
-        json_str = json.dumps(data, indent=2)
-        b64 = base64.b64encode(json_str.encode()).decode()
-        href = f'<a href="data:application/json;base64,{b64}" download="{filename}">Download JSON</a>'
-    return href
+
 
 def main():
     # Header
@@ -106,6 +93,24 @@ def main():
     # Main content
     st.markdown("### 📄 Upload Your Academic Transcript")
     st.markdown("Upload your USYD academic transcript PDF to calculate your EIHWAM and honours class.")
+    
+    # Instructions for getting transcript
+    st.markdown("""
+    <div class="info-box">
+        <h4>📋 How to Download Your Academic Transcript</h4>
+        <p>To get your academic transcript from Sydney Student:</p>
+        <ol>
+            <li>Go to <a href="https://sydneystudent.sydney.edu.au/sitsvision/wrd/siw_lgn" target="_blank">Sydney Student</a></li>
+            <li>Log in with your UniKey</li>
+            <li>Navigate to <strong>My Studies</strong> → <strong>Assessments</strong></li>
+            <li>Click <strong>View your course results</strong></li>
+            <li>Click <strong>Access a printable version</strong></li>
+            <li>Select <strong>Online Transcript</strong></li>
+            <li>Your transcript will automatically download as a PDF</li>
+        </ol>
+        <p><strong>Upload the downloaded PDF file below.</strong></p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # File uploader
     uploaded_file = st.file_uploader(
@@ -190,37 +195,7 @@ def main():
             # Display table
             st.dataframe(df_display, use_container_width=True)
             
-            # Download options
-            st.markdown("### 💾 Download Results")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                csv_link = create_download_link(df, f"eihwam_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", "csv")
-                st.markdown(csv_link, unsafe_allow_html=True)
-            
-            with col2:
-                json_data = {
-                    'eihwam': result['eihwam'],
-                    'wam': result['wam'],
-                    'honours_class': result['honours_class'],
-                    'units': result['units'],
-                    'statistics': {
-                        'total_units': result['total_units'],
-                        'included_units': result['included_units'],
-                        'excluded_units': result['excluded_units']
-                    }
-                }
-                # Create a simple DataFrame with just the summary data for JSON download
-                summary_df = pd.DataFrame([{
-                    'EIHWAM': result['eihwam'],
-                    'WAM': result['wam'],
-                    'Honours_Class': result['honours_class'],
-                    'Total_Units': result['total_units'],
-                    'Included_Units': result['included_units'],
-                    'Excluded_Units': result['excluded_units']
-                }])
-                json_link = create_download_link(summary_df, f"eihwam_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", "json")
-                st.markdown(json_link, unsafe_allow_html=True)
+
             
             # Warnings and information
             if result['excluded_units'] > 0:
