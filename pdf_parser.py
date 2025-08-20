@@ -244,7 +244,7 @@ class TranscriptParser:
             and u['credit_points'] > 0  # Exclude 0 credit point units
         ]
         
-        # For regular WAM: Include ALL units with marks and credit points (except 0 credit point units)
+        # For regular WAM: Include ALL units with marks and credit points (including 1000-level)
         wam_units = [
             u for u in units 
             if u['mark'] is not None 
@@ -263,9 +263,9 @@ class TranscriptParser:
         if not wam_units:
             wam = 0.0
         else:
-            # Calculate regular WAM (includes all units with marks)
-            wam_numerator = sum(u['credit_points'] * u['mark'] for u in wam_units)
-            wam_denominator = sum(u['credit_points'] for u in wam_units)
+            # Calculate regular WAM using same weighting as EIHWAM but including ALL units
+            wam_numerator = sum(u['weight'] * u['credit_points'] * u['mark'] for u in wam_units)
+            wam_denominator = sum(u['weight'] * u['credit_points'] for u in wam_units)
             wam = wam_numerator / wam_denominator if wam_denominator > 0 else 0.0
         
         return round(eihwam, 2), round(wam, 2)
