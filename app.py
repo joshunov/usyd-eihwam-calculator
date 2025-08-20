@@ -13,19 +13,6 @@ st.set_page_config(
 # Custom CSS for better styling
 st.markdown("""
 <style>
-    /* Ensure all text has good contrast */
-    .stMarkdown, .stText, .stDataFrame {
-        color: #333333 !important;
-    }
-    
-    /* Ensure links are visible */
-    a {
-        color: #1f77b4 !important;
-    }
-    
-    a:hover {
-        color: #0056b3 !important;
-    }
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
