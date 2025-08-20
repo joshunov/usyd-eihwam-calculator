@@ -210,7 +210,16 @@ def main():
                         'excluded_units': result['excluded_units']
                     }
                 }
-                json_link = create_download_link(pd.DataFrame([json_data]), f"eihwam_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", "json")
+                # Create a simple DataFrame with just the summary data for JSON download
+                summary_df = pd.DataFrame([{
+                    'EIHWAM': result['eihwam'],
+                    'WAM': result['wam'],
+                    'Honours_Class': result['honours_class'],
+                    'Total_Units': result['total_units'],
+                    'Included_Units': result['included_units'],
+                    'Excluded_Units': result['excluded_units']
+                }])
+                json_link = create_download_link(summary_df, f"eihwam_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", "json")
                 st.markdown(json_link, unsafe_allow_html=True)
             
             # Warnings and information
@@ -239,7 +248,7 @@ def main():
         except Exception as e:
             st.error(f"❌ Error processing transcript: {str(e)}")
             st.markdown("""
-            <div class="warning-box">
+            <div class="info-box">
                 <h4>🔧 Troubleshooting</h4>
                 <p>If you're experiencing issues:</p>
                 <ul>
