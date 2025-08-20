@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.venv/
+venv/
+.env
+.DS_Store
+*.log
+.streamlit/
+
+# PDF files (to protect privacy)
+*.pdf
+
+# Test and debug files
+test_parser.py
+debug_parser.py
