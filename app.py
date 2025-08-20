@@ -48,6 +48,15 @@ st.markdown("""
         border-radius: 10px;
         padding: 1rem;
         margin: 1rem 0;
+        color: #0c5460;
+    }
+    .instructions-box {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #212529;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -88,6 +97,9 @@ def main():
         st.markdown("**⚠️ Disclaimer:** This calculator is for informational purposes only. Please refer to the [official USYD handbook](https://www.sydney.edu.au/handbooks/engineering/) for official calculations.")
         
         st.markdown("---")
+        st.markdown("**📚 Source:** EIHWAM calculation methodology and honours class thresholds are based on the [USYD Engineering Handbook](https://www.sydney.edu.au/handbooks/engineering/).")
+        
+        st.markdown("---")
         st.markdown("**🔒 Privacy:** Your transcript is processed in memory only and is not stored.")
     
     # Main content
@@ -96,7 +108,7 @@ def main():
     
     # Instructions for getting transcript
     st.markdown("""
-    <div class="info-box">
+    <div class="instructions-box">
         <h4>📋 How to Download Your Academic Transcript</h4>
         <p>To get your academic transcript from Sydney Student:</p>
         <ol>
