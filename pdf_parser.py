@@ -88,11 +88,13 @@ class TranscriptParser:
             for match in unit_matches:
                 unit_code = match.group(1)
                 
-                # Extract credit points - look for numbers at the end of the line
-                cp_match = re.search(r'\b(6|12|0|3)\b', line)
+                # Extract credit points - look for common credit point values
+                # Look for 6, 12, 3, or 0 credit points (most common USYD values)
+                cp_matches = re.findall(r'\b(6|12|3|0)\b', line)
                 credit_points = None
-                if cp_match:
-                    credit_points = int(cp_match.group(1))
+                if cp_matches:
+                    # Take the last match as it's usually at the end of the line
+                    credit_points = int(cp_matches[-1])
                 
                 # For PEP units, explicitly set credit points to 0
                 if unit_code.startswith('ENGP'):
